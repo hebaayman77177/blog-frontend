@@ -1,17 +1,3 @@
-// import React from "react";
-
-// const Layout = ({ children }) => {
-//   return (
-//     <>
-//       {/* <PrimarySearchAppBar />
-//       {children} */}
-
-//     </>
-//   );
-// };
-
-// export default Layout;
-
 import React from "react";
 import PropTypes from "prop-types";
 // import AppBar from "@material-ui/core/AppBar";
@@ -136,7 +122,6 @@ function Layout(props) {
       <main className={classes.content}>
         <div className={classes.toolbar} />
         {props.children}
-        {/* hiiii */}
       </main>
     </div>
   );

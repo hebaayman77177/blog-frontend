@@ -1,7 +1,8 @@
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
+import HomePage from "./pages/HomePage";
 
 function App() {
   return (
@@ -14,6 +15,9 @@ function App() {
             </Route>
             <Route path="/signup">
               <SignupPage />
+            </Route>
+            <Route path="/">
+              <HomePage/>
             </Route>
           </Switch>
         </div>
