@@ -11,6 +11,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import MailIcon from "@material-ui/icons/Mail";
+import Box from "@material-ui/core/Box";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import AppBar from "../components/AppBar";
 import DrawerList from "../components/DrawerList";
@@ -24,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
   drawer: {
     [theme.breakpoints.up("sm")]: {
       width: drawerWidth,
+      backgroundColor: "green",
       flexShrink: 0,
     },
   },
@@ -87,7 +89,9 @@ function Layout(props) {
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <AppBar className={classes.appBar} position="fixed" />
+      <Box>
+        <AppBar className={classes.appBar} position="fixed" />
+      </Box>
       <nav className={classes.drawer} aria-label="mailbox folders">
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
         <Hidden smUp implementation="css">
