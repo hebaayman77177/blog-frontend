@@ -3,6 +3,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import HomePage from "./pages/HomePage";
+import CreatePost from "./pages/posts/CreatePostPage";
 
 function App() {
   return (
@@ -16,8 +17,11 @@ function App() {
             <Route path="/signup">
               <SignupPage />
             </Route>
+            <Route path="/create-post">
+              <CreatePost />
+            </Route>
             <Route path="/">
-              <HomePage/>
+              <HomePage />
             </Route>
           </Switch>
         </div>

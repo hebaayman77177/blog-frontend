@@ -26,7 +26,6 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(2),
     display: "flex",
     margin: theme.spacing(10),
-  
   },
   drawer: {
     [theme.breakpoints.up("sm")]: {
