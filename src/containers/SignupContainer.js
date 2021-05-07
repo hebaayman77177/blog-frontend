@@ -89,6 +89,7 @@ export default function SignUpContainer() {
                 token: res.data.token,
                 name: res.data.data.user.name,
                 email: res.data.data.user.email,
+                id: res.data.data.user._id,
               },
             });
             console.log(res);

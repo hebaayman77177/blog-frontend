@@ -71,7 +71,7 @@ export default function LoginContainer() {
   const [processLogin, setProcessLogin] = useState(false);
   const { dispatch } = useContext(AuthContext);
   return (
-    <Container  maxWidth="xs">
+    <Container maxWidth="xs">
       <CssBaseline />
 
       <div className={classes.paper}>
@@ -97,6 +97,7 @@ export default function LoginContainer() {
                 token: res.data.token,
                 name: res.data.data.user.name,
                 email: res.data.data.user.email,
+                id: res.data.data.user._id,
               },
             });
             console.log(res);

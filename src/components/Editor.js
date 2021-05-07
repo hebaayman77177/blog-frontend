@@ -1,16 +1,39 @@
 import React from "react";
 import dynamic from "next/dynamic";
+import Box from "@material-ui/core/Box";
 import axios from "../axios";
 import "../../node_modules/react-quill/dist/quill.snow.css";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 class Editor extends React.Component {
-  
   constructor(props) {
     super(props);
-    this.state = { editorHtml: "" };
+    this.setWrapperRef = this.setWrapperRef.bind(this);
+    this.handleClickOutside = this.handleClickOutside.bind(this);
+    this.state = { editorHtml: props.initPost };
     this.handleChange = this.handleChange.bind(this);
+  }
+
+  componentDidMount() {
+    document.addEventListener("mousedown", this.handleClickOutside);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("mousedown", this.handleClickOutside);
+  }
+
+  /**
+   * Set the wrapper ref
+   */
+  setWrapperRef(node) {
+    this.wrapperRef = node;
+  }
+
+  handleClickOutside(event) {
+    if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
+      this.props.handleClickOutsideEditor(this.state.editorHtml);
+    }
   }
 
   handleChange(html) {
@@ -61,39 +84,40 @@ class Editor extends React.Component {
 
   render() {
     return (
-      <div className="text-editor">
-        {JSON.stringify(this.state.editorHtml)}
-        <hr />
-        <ReactQuill
-          ref={(el) => {
-            this.quill = el;
-          }}
-          onChange={this.handleChange}
-          placeholder={this.props.placeholder}
-          modules={{
-            toolbar: {
-              container: [
-                [
-                  { header: "1" },
-                  { header: "2" },
-                  { header: [3, 4, 5, 6] },
-                  { font: [] },
+      <Box ref={this.setWrapperRef}>
+        <div className="text-editor">
+          <ReactQuill
+            value={this.state.editorHtml}
+            ref={(el) => {
+              this.quill = el;
+            }}
+            onChange={this.handleChange}
+            placeholder={this.props.placeholder}
+            modules={{
+              toolbar: {
+                container: [
+                  [
+                    { header: "1" },
+                    { header: "2" },
+                    { header: [3, 4, 5, 6] },
+                    { font: [] },
+                  ],
+                  [{ size: [] }],
+                  ["bold", "italic", "underline", "strike", "blockquote"],
+                  [{ list: "ordered" }, { list: "bullet" }],
+                  ["link", "video"],
+                  ["link", "image", "video"],
+                  ["clean"],
+                  ["code-block"],
                 ],
-                [{ size: [] }],
-                ["bold", "italic", "underline", "strike", "blockquote"],
-                [{ list: "ordered" }, { list: "bullet" }],
-                ["link", "video"],
-                ["link", "image", "video"],
-                ["clean"],
-                ["code-block"],
-              ],
-              handlers: {
-                image: this.imageHandler,
+                handlers: {
+                  image: this.imageHandler,
+                },
               },
-            },
-          }}
-        />
-      </div>
+            }}
+          />
+        </div>
+      </Box>
     );
   }
 }
