@@ -8,6 +8,7 @@ import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import { AuthContext } from "../contexts/AuthContext";
+import useAuth from "../hooks/useAuth";
 
 const useStyles = makeStyles((theme) => ({
   unstyledButton: {
@@ -39,7 +40,7 @@ const CreatePost = ({
   afterSubmit,
 }) => {
   const classes = useStyles();
-  const { state: AuthContextState } = useContext(AuthContext);
+  const AuthContextState = useAuth();
   const [post, setPost] = useState(initPost);
   const [tags, setTags] = useState(initTags);
   const [title, setTitle] = useState(initTitle);

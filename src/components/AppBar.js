@@ -1,6 +1,6 @@
 import React from "react";
 import { fade, makeStyles } from "@material-ui/core/styles";
-import { AppBar as MuiAppBarC } from "@material-ui/core";
+import { AppBar as MuiAppBarC, Button } from "@material-ui/core";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
@@ -14,6 +14,8 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import MailIcon from "@material-ui/icons/Mail";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import MoreIcon from "@material-ui/icons/MoreVert";
+import AuthDependentRender from "./AuthDependentRender";
+import Divider from "@material-ui/core/Divider";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -77,6 +79,14 @@ const useStyles = makeStyles((theme) => ({
       display: "none",
     },
   },
+  appBarLeft: {
+    "&>*": {
+      marginLeft: theme.spacing(1),
+    },
+    "&>*:last-child": {
+      marginRight: theme.spacing(6),
+    },
+  },
 }));
 
 export default function AppBar(props) {
@@ -108,15 +118,25 @@ export default function AppBar(props) {
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
-      anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      getContentAnchorEl={null}
+      anchorOrigin={{
+        vertical: "bottom",
+        // horizontal: "right",
+      }}
+      // transformOrigin={{
+      //   vertical: "top",
+      //   horizontal: "center",
+      // }}
       id={menuId}
       keepMounted
-      transformOrigin={{ vertical: "top", horizontal: "right" }}
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+
+      <MenuItem onClick={handleMenuClose} >Profile</MenuItem>
+      <Divider />
+      <MenuItem onClick={handleMenuClose}>Reading List</MenuItem>
+      <MenuItem onClick={handleMenuClose}>Create Post</MenuItem>
     </Menu>
   );
 
@@ -174,7 +194,7 @@ export default function AppBar(props) {
             <MenuIcon />
           </IconButton>
           <Typography className={classes.title} variant="h6" noWrap>
-            Material-UI
+            LOGO
           </Typography>
           <div className={classes.search}>
             <div className={classes.searchIcon}>
@@ -191,26 +211,43 @@ export default function AppBar(props) {
           </div>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            <IconButton aria-label="show 4 new mails" color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <MailIcon />
-              </Badge>
-            </IconButton>
-            <IconButton aria-label="show 17 new notifications" color="inherit">
-              <Badge badgeContent={17} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
+            <div className={classes.appBarLeft}>
+              <AuthDependentRender
+                IfAuthComponent={null}
+                IfNotAuthComponent={
+                  <Button variant="contained" color="secondary">
+                    Create Account
+                  </Button>
+                }
+              />
+              <AuthDependentRender
+                IfAuthComponent={
+                  <Button variant="outlined" color="secondary">
+                    Logout
+                  </Button>
+                }
+                IfNotAuthComponent={
+                  <Button variant="outlined" color="secondary">
+                    Login
+                  </Button>
+                }
+              />
+              <AuthDependentRender
+                IfAuthComponent={
+                  <IconButton
+                    edge="end"
+                    aria-label="account of current user"
+                    aria-controls={menuId}
+                    aria-haspopup="true"
+                    onClick={handleProfileMenuOpen}
+                    color="secondary"
+                  >
+                    <AccountCircle />
+                  </IconButton>
+                }
+                IfNotAuthComponent={null}
+              />
+            </div>
           </div>
           <div className={classes.sectionMobile}>
             <IconButton
