@@ -14,36 +14,32 @@ const useStyles = makeStyles((theme) => ({
 }));
 const pageSize = 20;
 let page = 1;
-const PostsContainer = (props) => {
+const InfiniteScrollList = (props) => {
   const classes = useStyles();
-  const [blogs, setBlogs] = useState([]);
+  const [itmes, setItems] = useState([]);
   const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
     (async () => {
-      const res = await axios.get(`/blogs?page=${page}&limit=${pageSize}`);
-      if (res.data.legnth === 0) {
-        setHasMore(false);
-        return;
-      }
-      const blogs = res.data.data;
-      setBlogs(blogs);
+      const res = await axios.get(`${url}&page=${page}&limit=${pageSize}`);
+      const resItmes = res.data.data;
+      setItems(resItmes);
     })();
   }, []);
   const fetchMoreData = async () => {
     page += 1;
-    const res = await axios.get(`/blogs?page=${page}&limit=${pageSize}`);
+    const res = await axios.get(`${url}&page=${page}&limit=${pageSize}`);
     if (res.data.legnth === 0) {
       setHasMore(false);
       return;
     }
-    setBlogs([...blogs, ...res.data.data]);
+    setItems([...items, ...res.data.data]);
   };
   return (
     <Container maxWidth="md">
       <Grid container>
         <InfiniteScroll
-          dataLength={blogs.length}
+          dataLength={items.length}
           next={fetchMoreData}
           loader={<h4 style={{ textAlign: "center" }}>Loading...</h4>}
           hasMore={hasMore}
@@ -53,17 +49,9 @@ const PostsContainer = (props) => {
             </p>
           }
         >
-          {blogs.map((item) => (
+          {items.map((item) => (
             <Box className={classes.blog}>
-              <PostCard
-                key={item._id}
-                title={item.title}
-                creator={item.creator}
-                updatedAt={item.updatedAt}
-                tags={item.tags}
-                numInteractions={item.numInteractions}
-                slug={item.slug}
-              />
+              <ToRenderComponent {...item}></ToRenderComponent>
             </Box>
           ))}
         </InfiniteScroll>
@@ -72,4 +60,4 @@ const PostsContainer = (props) => {
   );
 };
 
-export default PostsContainer;
+export default InfiniteScrollList;

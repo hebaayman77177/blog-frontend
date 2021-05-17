@@ -7,7 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import ReactHtmlParser from "react-html-parser";
 import { makeStyles } from "@material-ui/core/styles";
 
-import Layout from "../../Layouts/Layout";
+import AuthLayout from "../../Layouts/AuthLayout";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,7 +25,8 @@ const useStyles = makeStyles((theme) => ({
 const ShowPostPage = (props) => {
   const classes = useStyles();
   const [post, setPost] = useState(null);
-  const { id } = useParams();
+  const { slug } = useParams();
+  const id = slug.split("_").pop();
 
   useEffect(() => {
     axios.get(`/blogs/${id}`).then((res) => {
@@ -37,7 +38,7 @@ const ShowPostPage = (props) => {
     });
   }, []);
   return (
-    <Layout>
+    <AuthLayout>
       {post === null ? null : (
         <Box className={classes.root}>
           <Typography variant="h3" color="initial">
@@ -54,7 +55,7 @@ const ShowPostPage = (props) => {
           </Typography>
         </Box>
       )}
-    </Layout>
+    </AuthLayout>
   );
 };
 

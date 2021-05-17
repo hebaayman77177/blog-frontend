@@ -1,11 +1,11 @@
 import React from "react";
 import PostsContainer from "../containers/PostsContainer";
-import Layout from "../Layouts/Layout";
+import AuthLayout from "../Layouts/AuthLayout";
 const HomePage = (props) => {
   return (
-    <Layout>
+    <AuthLayout>
       <PostsContainer />
-    </Layout>
+    </AuthLayout>
   );
 };
 

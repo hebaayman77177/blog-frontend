@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import { AppBar as MuiAppBarC, Button } from "@material-ui/core";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -16,6 +16,8 @@ import NotificationsIcon from "@material-ui/icons/Notifications";
 import MoreIcon from "@material-ui/icons/MoreVert";
 import AuthDependentRender from "./AuthDependentRender";
 import Divider from "@material-ui/core/Divider";
+import { logout, login, AuthContext, useAuth } from "../contexts/AuthContext";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -87,16 +89,37 @@ const useStyles = makeStyles((theme) => ({
       marginRight: theme.spacing(6),
     },
   },
+  toolbarMixin: {
+    ...theme.mixins.toolbar,
+  },
 }));
 
 export default function AppBar(props) {
   const classes = useStyles();
+  const { dispatch: AuthDispatch } = useAuth();
+  const history = useHistory();
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
+  const logoutHandler = useCallback(() => {
+    logout(AuthDispatch);
+  }, []);
+  const goToLoginPageHandler = useCallback(() => {
+    console.log("hi");
+    history.push("/login");
+  }, []);
+  const createPostHandler = useCallback(() => {
+    history.push("/create-post");
+    handleMenuClose();
+  }, []);
+  const gotoProfileHandler = useCallback(() => {
+    history.push("/profile");
+    handleMenuClose();
+  }, []);
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -132,11 +155,10 @@ export default function AppBar(props) {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-
-      <MenuItem onClick={handleMenuClose} >Profile</MenuItem>
+      <MenuItem onClick={gotoProfileHandler}>Profile</MenuItem>
       <Divider />
       <MenuItem onClick={handleMenuClose}>Reading List</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Create Post</MenuItem>
+      <MenuItem onClick={createPostHandler}>Create Post</MenuItem>
     </Menu>
   );
 
@@ -222,12 +244,20 @@ export default function AppBar(props) {
               />
               <AuthDependentRender
                 IfAuthComponent={
-                  <Button variant="outlined" color="secondary">
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={logoutHandler}
+                  >
                     Logout
                   </Button>
                 }
                 IfNotAuthComponent={
-                  <Button variant="outlined" color="secondary">
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={goToLoginPageHandler}
+                  >
                     Login
                   </Button>
                 }
@@ -262,6 +292,7 @@ export default function AppBar(props) {
           </div>
         </Toolbar>
       </MuiAppBarC>
+      <Toolbar style={{ paddingTop: "20px" }} />
       {renderMobileMenu}
       {renderMenu}
     </div>

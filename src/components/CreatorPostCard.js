@@ -7,12 +7,15 @@ import CardActions from "@material-ui/core/CardActions";
 import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
 import { red } from "@material-ui/core/colors";
+import { useConfirm } from "material-ui-confirm";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import _ from "lodash";
 import moment from "moment";
 import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
 import { useHistory } from "react-router";
+import { useAuth } from "../contexts/AuthContext";
+import axios from "../axios";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -79,54 +82,37 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function PostCart({
-  creator,
-  title,
-  timetoread,
-  updatedAt,
-  tags,
-  numInteractions,
-  slug,
-}) {
+export default function CreatorPostCard({ title, tags, slug, id }) {
   const classes = useStyles();
   const history = useHistory();
-  const goToPostHandler = useCallback(() => {
+  const confirm = useConfirm();
+  const { state: auth } = useAuth();
+
+  const showPostHandler = useCallback(() => {
     history.push(`/show-post/${slug}`);
   }, []);
-  const goToProfileHandler = useCallback(() => {
-    console.log("profile");
-    // history.push(`/show-post/${slug}`);
+  const editPostHandler = useCallback(() => {
+    console.log("edit");
+    history.push(`/edit-post/${slug}`);
   }, []);
-  const savePostHandler = useCallback(() => {
-    console.log("savePost");
-    // history.push(`/show-post/${slug}`);
-  }, []);
-  const lovePostHandler = useCallback(() => {
-    console.log("lovepost");
-    // history.push(`/show-post/${slug}`);
+  const deletePostHandler = useCallback(() => {
+    console.log("deletePost");
+    confirm({ description: "Really want to delete the post :(" })
+      .then(async () => {
+        const res = await axios.delete(`/blogs/${id}`, {
+          headers: {
+            Authorization: "Bearer " + auth.token, //the token is a variable which holds the token
+          },
+        });        
+      })
+      .catch(() => {});
   }, []);
   return (
     <Card className={classes.root}>
-      <CardHeader
-        className={classes.cardHeader}
-        avatar={
-          <Avatar
-            aria-label="recipe"
-            src={_.pick(creator, ["photo"])}
-            className={classes.avatar}
-            onClick={goToProfileHandler}
-          >
-            {_.has(creator, "photo") ? null : creator["name"][0]}
-          </Avatar>
-        }
-        title={creator.name}
-        subheader={moment(updatedAt).format("d, MMMM")}
-      />
-
       <Box className={classes.cardContent}>
         <CardContent>
           <Typography
-            onClick={goToPostHandler}
+            onClick={showPostHandler}
             variant="h5"
             component="p"
             className={classes.cardTitle}
@@ -152,29 +138,22 @@ export default function PostCart({
         </CardContent>
         <CardActions disableSpacing>
           <Button
-            variant="text"
+            variant="outlined"
             size="medium"
-            className={classes.button}
-            startIcon={<FavoriteIcon />}
-            onClick={lovePostHandler}
+            color="secondary"
+            className={classes.goRight}
+            onClick={editPostHandler}
           >
-            {numInteractions} interactions
+            Edit
           </Button>
-          <Typography
-            variant="span"
-            component="span"
-            className={`${classes.goRight} ${classes.remainingMinutes}`}
-          >
-            {timetoread} minutes
-          </Typography>
           <Button
             variant="contained"
             size="medium"
-            color="default"
+            color="secondary"
             className={classes.saveButton}
-            onClick={savePostHandler}
+            onClick={deletePostHandler}
           >
-            Save
+            Delete
           </Button>
         </CardActions>
       </Box>

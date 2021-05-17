@@ -1,21 +1,27 @@
 import React, { useEffect, useState } from "react";
-import TagsInput from "react-tagsinput";
 import "react-tagsinput/react-tagsinput.css";
 import { useHistory } from "react-router-dom";
 import axios from "../../axios";
 import PostForm from "../../components/PostForm";
-import Box from "@material-ui/core/Box";
 import { useParams } from "react-router-dom";
-import Layout from "../../Layouts/Layout";
+import AuthLayout from "../../Layouts/AuthLayout";
 import useRequireAuth from "../../hooks/useRequireAuth";
+import { useAuth } from "../../contexts/AuthContext";
 
 const EditPostPage = (props) => {
   useRequireAuth();
   const history = useHistory();
+  const { state: auth } = useAuth();
   const [post, setPost] = useState(null);
-  const { id } = useParams();
+  const { slug } = useParams();
+  const id = slug.split("_").pop();
+
   const submitHandler = async (data) => {
-    const res = await axios.patch(`/blogs/${id}`, data);
+    const res = await axios.patch(`/blogs/${id}`, data, {
+      headers: {
+        Authorization: "Bearer " + auth.token, //the token is a variable which holds the token
+      },
+    });
   };
 
   const afterSubmit = () => {
@@ -29,7 +35,7 @@ const EditPostPage = (props) => {
   }, []);
 
   return (
-    <Layout>
+    <AuthLayout>
       {post !== null ? (
         <PostForm
           formTitle="(: Update Your Post :)"
@@ -40,7 +46,7 @@ const EditPostPage = (props) => {
           afterSubmit={afterSubmit}
         />
       ) : null}
-    </Layout>
+    </AuthLayout>
   );
 };
 

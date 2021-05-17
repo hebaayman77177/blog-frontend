@@ -3,10 +3,12 @@ import dynamic from "next/dynamic";
 import Box from "@material-ui/core/Box";
 import axios from "../axios";
 import "../../node_modules/react-quill/dist/quill.snow.css";
+import { AuthContext } from "../contexts/AuthContext";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 class Editor extends React.Component {
+  static contextType = AuthContext;
   constructor(props) {
     super(props);
     this.setWrapperRef = this.setWrapperRef.bind(this);
@@ -16,6 +18,12 @@ class Editor extends React.Component {
   }
 
   componentDidMount() {
+    this.auth = this.context.state;
+    console.log(
+      "🚀 ~ file: Editor.js ~ line 22 ~ Editor ~ componentDidMount ~ this.auth",
+      this.auth
+    );
+
     document.addEventListener("mousedown", this.handleClickOutside);
   }
 
@@ -39,10 +47,16 @@ class Editor extends React.Component {
   handleChange(html) {
     this.setState({ editorHtml: html });
   }
-
+  getAuth() {
+    return this.auth;
+  }
   imageHandler() {
     const input = document.createElement("input");
-
+    console.log(
+      "🚀 ~ file: Editor.js ~ line 50 ~ Editor ~ imageHandler ~ input",
+      this
+    );
+    const mauth = this.auth;
     input.setAttribute("type", "file");
     input.setAttribute("accept", "image/*");
     input.click();
@@ -67,7 +81,13 @@ class Editor extends React.Component {
       this.quill.setSelection(range.index + 1);
       function apiPostNewsImage(formData) {
         return (async () => {
-          const res = await axios.post("/blogs/upload-img", formData);
+          const res = await axios.post("/blogs/upload-img", formData,
+          //  {
+          //   headers: {
+          //     Authorization: "Bearer " + mauth.token, //the token is a variable which holds the token
+          //   },
+          // }
+          );
           return res.data.data.imgPath;
         })();
       }
